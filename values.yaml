@@ -4,3 +4,10 @@ image:
   tag: v0.1
 pagespeed:
   enabled: false
+openresty:
+  geoip:
+    enabled: true
+    accountid: MTQ2NTIwCg==
+    license: dHNEeWp2d1VSaXZERUs0Rgo=
+  cloudflare:
+    enabled: false
