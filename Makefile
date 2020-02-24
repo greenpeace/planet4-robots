@@ -1,7 +1,5 @@
 RELEASE_NAME ?= p4-robots
 
-CHART_VERSION ?= 0.3.1-alpha
-
 SHELL := /bin/bash
 
 NAMESPACE ?= default
@@ -47,7 +45,7 @@ test:
 	yamllint env/prod/values.yaml
 
 pull:
-	docker pull gcr.io/planet-4-151612/openresty:geoip_updates
+	docker pull gcr.io/planet-4-151612/openresty:latest
 
 build: test pull
 	docker build \
@@ -77,7 +75,6 @@ dev: test
 	helm repo update
 	helm upgrade --install --force --wait $(RELEASE_NAME) p4/static \
 		--namespace=$(NAMESPACE) \
-		--version=$(CHART_VERSION) \
 		--values values.yaml \
 		--values env/dev/values.yaml
 

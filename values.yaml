@@ -1,9 +1,10 @@
 ---
 image:
   repository: gcr.io/planet-4-151612/robots
-  tag: build-local
+  tag: v0.1
 pagespeed:
   enabled: false
+<<<<<<< HEAD
 openresty:
   geoip:
     enabled: true
@@ -11,3 +12,5 @@ openresty:
     license: dHNEeWp2d1VSaXZERUs0Rgo=
   cloudflare:
     enabled: false
+=======
+>>>>>>> parent of 845e14c... Test for geoip enabled, currently tagged to geoip_updates docker file & chart version 0.3.1-alpha.
