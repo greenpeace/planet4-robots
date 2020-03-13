@@ -4,13 +4,11 @@ image:
   tag: v0.1
 pagespeed:
   enabled: false
-<<<<<<< HEAD
+
 openresty:
   geoip:
     enabled: true
-    accountid: MTQ2NTIwCg==
-    license: dHNEeWp2d1VSaXZERUs0Rgo=
+    accountid: ""
+    license: ""
   cloudflare:
     enabled: false
-=======
->>>>>>> parent of 845e14c... Test for geoip enabled, currently tagged to geoip_updates docker file & chart version 0.3.1-alpha.
