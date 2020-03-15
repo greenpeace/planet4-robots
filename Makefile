@@ -1,8 +1,9 @@
-RELEASE_NAME ?= p4-robots
-
 SHELL := /bin/bash
 
 NAMESPACE ?= default
+RELEASE_NAME ?= p4-robots
+CHART_NAME ?= p4/static
+CHART_VERSION ?= 0.3.1
 
 DEV_CLUSTER ?= p4-development
 DEV_PROJECT ?= planet-4-151612
@@ -38,16 +39,19 @@ endif
 REVISION_TAG = $(shell git rev-parse --short HEAD)
 
 
-test:
-	yamllint .circleci/config.yml
-	yamllint values.yaml
-	yamllint env/dev/values.yaml
-	yamllint env/prod/values.yaml
+lint: lint-yaml lint-ci
+
+lint-yaml:
+	@find . -type f -name '*.yml' | xargs yamllint
+	@find . -type f -name '*.yaml' | xargs yamllint
+
+lint-ci:
+	@circleci config validate
 
 pull:
 	docker pull gcr.io/planet-4-151612/openresty:latest
 
-build: test pull
+build: pull
 	docker build \
 		--tag=gcr.io/planet-4-151612/robots:$(BUILD_TAG) \
 		--tag=gcr.io/planet-4-151612/robots:$(BUILD_NUM) \
@@ -68,22 +72,36 @@ push-latest:
 		echo "Not tagged.. skipping latest"; \
 	} fi
 
-dev: test
+dev:
+ifndef CI
+	$(error Please commit and push, this is intended to be run in a CI environment)
+endif
 	gcloud config set project $(DEV_PROJECT)
 	gcloud container clusters get-credentials $(DEV_CLUSTER) --zone $(DEV_ZONE) --project $(DEV_PROJECT)
 	helm init --client-only
+	helm repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm repo update
-	helm upgrade --install --force --wait $(RELEASE_NAME) p4/static \
+	helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
+		--version $(CHART_VERSION) \
 		--values values.yaml \
 		--values env/dev/values.yaml
 
-prod: test
+prod:
+ifndef CI
+	$(error Please commit and push, this is intended to be run in a CI environment)
+endif
 	gcloud config set project $(PROD_PROJECT)
 	gcloud container clusters get-credentials $(PROD_CLUSTER) --zone $(PROD_ZONE) --project $(PROD_PROJECT)
 	helm init --client-only
+	helm repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm repo update
-	helm upgrade --install --force --wait $(RELEASE_NAME) p4/static \
+	helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
+		--version $(CHART_VERSION) \
 		--values values.yaml \
 		--values env/prod/values.yaml
+
+
+history:
+	helm history $(RELEASE_NAME) --max=5
