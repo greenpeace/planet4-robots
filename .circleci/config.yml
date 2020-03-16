@@ -29,6 +29,7 @@ jobs:
           docker_layer_caching: true
       - checkout
       - run: activate-gcloud-account.sh
+      - run: gcloud auth configure-docker
       - run: make build | tee /tmp/build.log
       - run: make push | tee /tmp/build.log
       - run:
