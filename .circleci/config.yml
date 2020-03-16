@@ -65,6 +65,7 @@ jobs:
             $(cat /tmp/deploy_dev.log)
             \`\`\`" \
             notify-job-failure.sh
+      - run: TYPE="@jhasenau Promotion" notify-job-hold.sh
       - run: |
           TYPE="Deploy" \
           EXTRA_TEXT="\`\`\`$(make history)\`\`\`" \
@@ -116,11 +117,17 @@ workflows:
             branches:
               only:
                 - develop
+      - hold:
+          type: approval
+          requires:
+            - dev
+          filters:
+            branches:
+              only: develop
       - prod:
           context: org-global
           requires:
-            - build
+            - hold
           filters:
             branches:
-              only:
-                - master
+              only: develop
