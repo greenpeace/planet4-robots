@@ -1,7 +1,7 @@
 ---
 image:
   repository: gcr.io/planet-4-151612/robots
-  tag: v0.1
+  tag: v0.2
 pagespeed:
   enabled: false
 
