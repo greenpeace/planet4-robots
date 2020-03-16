@@ -3,7 +3,7 @@ SHELL := /bin/bash
 NAMESPACE ?= default
 RELEASE_NAME ?= p4-robots
 CHART_NAME ?= p4/static
-CHART_VERSION ?= 0.3.1
+CHART_VERSION ?= 0.3.1-alpha
 
 DEV_CLUSTER ?= p4-development
 DEV_PROJECT ?= planet-4-151612
@@ -81,11 +81,13 @@ endif
 	helm init --client-only
 	helm repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm repo update
-	helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
+	@helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
 		--version $(CHART_VERSION) \
 		--values values.yaml \
-		--values env/dev/values.yaml
+		--values env/dev/values.yaml \
+		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
+		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
 prod:
 ifndef CI
@@ -96,11 +98,13 @@ endif
 	helm init --client-only
 	helm repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm repo update
-	helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
+	@helm upgrade --install --force --wait $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
 		--version $(CHART_VERSION) \
 		--values values.yaml \
-		--values env/prod/values.yaml
+		--values env/prod/values.yaml \
+		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
+		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
 
 history:

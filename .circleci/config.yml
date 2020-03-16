@@ -110,7 +110,7 @@ workflows:
       - dev:
           context: org-global
           requires:
-            - lint build
+            - build
           filters:
             branches:
               only:
@@ -118,7 +118,7 @@ workflows:
       - prod:
           context: org-global
           requires:
-            - lint dev
+            - build
           filters:
             branches:
               only:
