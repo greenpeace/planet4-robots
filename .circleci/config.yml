@@ -124,13 +124,6 @@ workflows:
           filters:
             branches:
               only: develop
-      - deploy-tag:
-          context: org-global
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /.*/
       - prod:
           context: org-global
           requires:
@@ -138,3 +131,13 @@ workflows:
           filters:
             branches:
               only: develop
+
+  tag:
+    jobs:
+      - build-push:
+          context: org-global
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
