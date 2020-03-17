@@ -134,7 +134,7 @@ workflows:
 
   tag:
     jobs:
-      - build-push:
+      - build:
           context: org-global
           filters:
             branches:
