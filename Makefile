@@ -85,6 +85,7 @@ endif
 		--namespace=$(NAMESPACE) \
 		--values values.yaml \
 		--values env/dev/values.yaml \
+		--version "$(CHART_VERSION)" \
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
 		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
