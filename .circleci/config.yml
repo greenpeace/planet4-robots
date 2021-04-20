@@ -1,24 +1,39 @@
 ---
+version: 2.1
+
+docker_auth: &docker_auth
+  username: $DOCKERHUB_USERNAME
+  password: $DOCKERHUB_PASSWORD
+
 defaults: &defaults
   docker:
     - image: greenpeaceinternational/circleci-base:latest
+      auth:
+        <<: *docker_auth
   working_directory: /home/circleci/app
-
-version: 2
 
 jobs:
   lint:
     <<: *defaults
     steps:
       - checkout
-      - run: make lint | tee /tmp/lint.log
       - run:
-          name: Notify failure
-          when: on_fail
-          command: |
-            TYPE="Test" \
-            EXTRA_TEXT="\`\`\`$(cat /tmp/lint.log)\`\`\`" \
-            notify-job-failure.sh
+          name: Lint yaml
+          command: make lint
+
+  lint-worker:
+    docker:
+      - image: circleci/node:lts
+        auth:
+          <<: *docker_auth
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: npm ci
+      - run:
+          name: Lint worker
+          command: ./node_modules/eslint/bin/eslint.js index.js
 
   build:
     <<: *defaults
@@ -30,21 +45,8 @@ jobs:
       - checkout
       - run: activate-gcloud-account.sh
       - run: gcloud auth configure-docker
-      - run: make build | tee /tmp/build.log
-      - run: make push | tee /tmp/build.log
-      - run:
-          name: Notify failure
-          when: on_fail
-          command: |
-            TYPE="Build" \
-            EXTRA_TEXT="\`\`\`
-            $(cat /tmp/build.log)
-            \`\`\`" \
-            notify-job-failure.sh
-      - run: |
-          TYPE="Build" \
-          EXTRA_TEXT="\`\`\`$(make history)\`\`\`" \
-          notify-job-success.sh
+      - run: make build
+      - run: make push
 
   dev:
     <<: *defaults
@@ -55,21 +57,27 @@ jobs:
       - run: activate-gcloud-account.sh
       - deploy:
           name: Deploy to development cluster
-          command: make dev | tee /tmp/deploy_dev.log
+          command: make dev
+
+  tag:
+    <<: *defaults
+    steps:
+      - checkout
       - run:
-          name: Notify failure
-          when: on_fail
+          name: prepare git
           command: |
-            TYPE="Deploy Dev" \
-            EXTRA_TEXT="\`\`\`
-            $(cat /tmp/deploy_dev.log)
-            \`\`\`" \
-            notify-job-failure.sh
-      - run: TYPE="@jhasenau Promotion" notify-job-hold.sh
-      - run: |
-          TYPE="Deploy" \
-          EXTRA_TEXT="\`\`\`$(make history)\`\`\`" \
-          notify-job-success.sh
+            git config user.email "${GIT_USER_EMAIL}"
+            git config user.name "CircleCI Bot"
+            git config merge.ours.driver true
+      - run:
+          name: tag
+          command: |
+            current_version=$(git-current-tag.sh)
+            new_version=$(increment-version.sh $current_version)
+            echo "Tagging to ${new_version}"
+            git tag -a "$new_version" -m "$new_version"
+            git push origin --tags
+
   prod:
     <<: *defaults
     environment:
@@ -79,36 +87,33 @@ jobs:
       - run: activate-gcloud-account.sh
       - deploy:
           name: Deploy to production cluster
-          command: make prod | tee /tmp/deploy.log
+          command: make prod
+
+  deploy-worker:
+    <<: *defaults
+    steps:
+      - checkout
       - run:
-          name: Notify failure
-          when: on_fail
-          command: |
-            TYPE="Deploy Prod" \
-            EXTRA_TEXT="\`\`\`$(cat /tmp/deploy.log)\`\`\`" \
-            notify-job-failure.sh
-      - run: |
-          TYPE="Deploy Prod" \
-          EXTRA_TEXT="\`\`\`$(make history)\`\`\`" \
-          notify-job-success.sh
+          name: Install dependencies
+          command: npm ci
+      - run:
+          name: Publish
+          command: npx wrangler publish
 
 workflows:
-  version: 2
-  deploy:
+  branch:
     jobs:
-      - lint:
-          context: org-global
-          filters:
-            branches:
-              ignore: master
+      - lint
+      - lint-worker
       - build:
           context: org-global
           requires:
             - lint
+            - lint-worker
           filters:
             branches:
               only:
-                - develop
+                - main
       - dev:
           context: org-global
           requires:
@@ -116,28 +121,35 @@ workflows:
           filters:
             branches:
               only:
-                - develop
-      - hold:
+                - main
+      - hold-promote:
           type: approval
           requires:
             - dev
           filters:
             branches:
-              only: develop
-      - prod:
+              only: main
+      - tag:
           context: org-global
           requires:
-            - hold
+            - hold-promote
           filters:
             branches:
-              only: develop
+              only: main
 
   tag:
     jobs:
-      - build:
+      - prod:
           context: org-global
           filters:
             branches:
               ignore: /.*/
             tags:
-              only: /^v\p{Digit}+\.\p{Digit}+\.\p{Digit}+.*/
+              only: /^v.*/
+      - deploy-worker:
+          context: cf-workers
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/

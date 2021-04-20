@@ -39,15 +39,11 @@ endif
 
 REVISION_TAG = $(shell git rev-parse --short HEAD)
 
-
-lint: lint-yaml lint-ci
+lint: lint-yaml
 
 lint-yaml:
 	@find . -type f -name '*.yml' | xargs yamllint
 	@find . -type f -name '*.yaml' | xargs yamllint
-
-lint-ci:
-	@circleci config validate
 
 pull:
 	docker pull gcr.io/planet-4-151612/openresty:latest

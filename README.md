@@ -3,9 +3,9 @@
 This repository is home to the static site at root of P4 Kubernetes clusters for
 all environments and deployed using CircleCI:
 
-- DEV:  https://k8s.p4.greenpeace.org
-- REL:  https://release.k8s.p4.greenpeace.org
-- PRD:  https://master.k8s.p4.greenpeace.org
+- DEV: `https://www-dev.greenpeace.org`
+- REL: `https://www-stage.greenpeace.org`
+- PRD: `https://www.greenpeace.org`
 
 This repo also uses the Static HELM chart found here:  
 https://github.com/greenpeace/planet4-helm-static

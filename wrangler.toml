@@ -1,0 +1,4 @@
+name = "planet4-robots"
+type = "javascript"
+workers_dev = false
+routes = ["www-dev.greenpeace.org/robots.txt", "www-stage.greenpeace.org/robots.txt"]
