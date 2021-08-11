@@ -6,9 +6,20 @@
 This repository is home to the static site at root of P4 Kubernetes clusters for
 all environments and deployed using CircleCI:
 
-- Develop:           `https://www-dev.greenpeace.org`
-- Prod - Release:       `https://www-stage.greenpeace.org`
-- Prod - Production:    `https://www.greenpeace.org`
+| Environment | End Point | Load Balancer |
+| ------ | ------ | ------ |
+| Develop | https://www-dev.greenpeace.org| Traefik |
+| Develop | https://k8s.p4.greenpeace.org| Traefik |
+| Develop | https://dev.p4.greenpeace.org| Nginx |
+| Prod - Release | https://www-stage.greenpeace.org| Traefik |
+| Prod - Release | https://release.k8s.p4.greenpeace.org| Traefik |
+| Prod - Release | https://release.p4.greenpeace.org| Nginx |
+| Prod - Production | https://www.greenpeace.org| Traefik |
+| Prod - Production | https://master.k8s.p4.greenpeace.org| Traefik |
+| Prod - Production | https://prod.p4.greenpeace.org| Traefik |
+| Prod - Production | https://prod.nginx.p4.greenpeace.org| Nginx |
+
+.
 
 <h1>Important Notes</h1>
 
