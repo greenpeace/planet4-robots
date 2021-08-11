@@ -3,3 +3,6 @@ hostname: master.k8s.p4.greenpeace.org
 ingress:
   hosts:
     - name: release.k8s.p4.greenpeace.org
+    - name: prod.p4.greenpeace.org
+    - name: release.p4.greenpeace.org
+    - name: prod.nginx.p4.greenpeace.org
