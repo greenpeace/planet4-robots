@@ -37,8 +37,8 @@ This repo is responsible for the following:
 
 ### Deployment
 
-   - In this repository, create and push a new tagged release vX.Y.Z -> CircleCI tag workflow
-   - Make commit to develop of your new tag number -> CircleCI deploy workflow to develop -> hold
+   - In this repository, create a new branch, add code, create PR to main
+   - Once approved, merge to main.
    - Check your dev deployment is successful, to move to prod:
    - Approve hold in deploy workflow
 
