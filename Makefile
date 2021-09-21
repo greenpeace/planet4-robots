@@ -3,7 +3,7 @@ SHELL := /bin/bash
 NAMESPACE ?= default
 RELEASE_NAME ?= p4-robots
 CHART_NAME ?= p4/static
-#CHART_VERSION ?= 0.3.2-resource
+CHART_VERSION ?= 0.3.6-alpha1
 # add to dev if used:  #		--version "$(CHART_VERSION)" \
 
 DEV_CLUSTER ?= p4-development
@@ -82,6 +82,7 @@ endif
 		--namespace=$(NAMESPACE) \
 		--values values.yaml \
 		--values env/dev/values.yaml \
+		--version "$(CHART_VERSION)" \		
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
 		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
