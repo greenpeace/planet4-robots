@@ -6,3 +6,16 @@ ingress:
     - name: prod.p4.greenpeace.org
     - name: release.p4.greenpeace.org
     - name: prod.nginx.p4.greenpeace.org
+
+nginxingress:
+  hosts:
+    - name: master.k8s.p4.greenpeace.org
+      tls: false
+    - name: release.k8s.p4.greenpeace.org
+      tls: false
+    - name: prod.p4.greenpeace.org
+      tls: false
+    - name: release.p4.greenpeace.org
+      tls: false
+    - name: prod.nginx.p4.greenpeace.org
+      tls: false
