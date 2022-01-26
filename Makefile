@@ -3,8 +3,6 @@ SHELL := /bin/bash
 NAMESPACE ?= default
 RELEASE_NAME ?= p4-robots
 CHART_NAME ?= p4/static
-#CHART_VERSION ?= 0.3.2-resource
-# add to dev if used:  #		--version "$(CHART_VERSION)" \
 
 DEV_CLUSTER ?= p4-development
 DEV_PROJECT ?= planet-4-151612

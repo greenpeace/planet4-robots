@@ -1,6 +1,9 @@
 ---
-hostname: k8s.p4.greenpeace.org
+hostname: www-dev.greenpeace.org
 ingress:
   hosts:
-    - name: www-dev.greenpeace.org
     - name: dev.p4.greenpeace.org
+nginxingress:
+  hosts:
+    - name: dev.p4.greenpeace.org
+      tls: true
