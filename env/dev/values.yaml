@@ -1,5 +1,6 @@
 ---
 hostname: www-dev.greenpeace.org
+hostpath: robots.txt
 ingress:
   hosts:
     - name: dev.p4.greenpeace.org
