@@ -7,3 +7,4 @@ nginxingress:
   hosts:
     - name: dev.p4.greenpeace.org
       tls: true
+      path: robots.txt
