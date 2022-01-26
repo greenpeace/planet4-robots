@@ -5,5 +5,5 @@ ingress:
     - name: dev.p4.greenpeace.org
 nginxingress:
   hosts:
-      - name: dev.p4.greenpeace.org
-        tls: true
+    - name: dev.p4.greenpeace.org
+      tls: true
