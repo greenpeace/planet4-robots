@@ -16,3 +16,5 @@ nginxingress:
       tls: true
     - name: prod.nginx.p4.greenpeace.org
       tls: true
+    - name: master.k8s.p4.greenpeace.org
+      tls: true
