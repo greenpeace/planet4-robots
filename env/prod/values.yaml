@@ -1,6 +1,7 @@
 ---
 hostname: master.k8s.p4.greenpeace.org
 hosttls: true
+hostpath: robots.txt
 ingress:
   hosts:
     - name: release.k8s.p4.greenpeace.org
@@ -11,11 +12,16 @@ nginxingress:
   hosts:
     - name: release.k8s.p4.greenpeace.org
       tls: true
+      path: robots.txt
     - name: prod.p4.greenpeace.org
       tls: true
+      path: robots.txt
     - name: release.p4.greenpeace.org
       tls: true
+      path: robots.txt
     - name: prod.nginx.p4.greenpeace.org
       tls: true
+      path: robots.txt
     - name: master.k8s.p4.greenpeace.org
       tls: true
+      path: robots.txt
