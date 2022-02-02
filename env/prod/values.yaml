@@ -22,6 +22,3 @@ nginxingress:
     - name: prod.nginx.p4.greenpeace.org
       tls: true
       path: robots.txt
-    - name: master.k8s.p4.greenpeace.org
-      tls: true
-      path: robots.txt
