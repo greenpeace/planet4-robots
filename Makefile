@@ -71,7 +71,7 @@ dev:
 	gcloud config set project $(DEV_PROJECT)
 	gcloud container clusters get-credentials $(DEV_CLUSTER) --zone $(DEV_ZONE) --project $(DEV_PROJECT)
 	helm3 plugin install https://github.com/helm/helm-2to3.git || true
-	helm3 2to3 convert "${HELM_RELEASE}" || true
+	helm3 2to3 convert "${RELEASE_NAME}" || true
 
 	helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm3 repo update
@@ -87,7 +87,7 @@ prod:
 	gcloud config set project $(PROD_PROJECT)
 	gcloud container clusters get-credentials $(PROD_CLUSTER) --zone $(PROD_ZONE) --project $(PROD_PROJECT)
 	helm3 plugin install https://github.com/helm/helm-2to3.git || true
-	helm3 2to3 convert "${HELM_RELEASE}" || true
+	helm3 2to3 convert "${RELEASE_NAME}" || true
 
 	helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm3 repo update
