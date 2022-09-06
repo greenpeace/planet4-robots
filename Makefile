@@ -78,8 +78,8 @@ dev:
 	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
 		--set image.tag=$(BUILD_NUM) \
-		--values values.yml \
-		--values env/dev/values.yml \
+		--values values.yaml \
+		--values env/dev/values.yaml \
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
 		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
@@ -94,8 +94,8 @@ prod:
 	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
 		--set image.tag=$(BUILD_NUM) \
-		--values values.yml \
-		--values env/prod/values.yml \
+		--values values.yaml \
+		--values env/prod/values.yaml \
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
 		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
