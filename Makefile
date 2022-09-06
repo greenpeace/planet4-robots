@@ -68,42 +68,36 @@ push-latest:
 	} fi
 
 dev:
-	ifndef CI
-		$(error Please commit and push, this is intended to be run in a CI environment)
-	endif
-		gcloud config set project $(DEV_PROJECT)
-		gcloud container clusters get-credentials $(DEV_CLUSTER) --zone $(DEV_ZONE) --project $(DEV_PROJECT)
-		helm3 plugin install https://github.com/helm/helm-2to3.git || true
-		helm3 2to3 convert "${HELM_RELEASE}" || true
+	gcloud config set project $(DEV_PROJECT)
+	gcloud container clusters get-credentials $(DEV_CLUSTER) --zone $(DEV_ZONE) --project $(DEV_PROJECT)
+	helm3 plugin install https://github.com/helm/helm-2to3.git || true
+	helm3 2to3 convert "${HELM_RELEASE}" || true
 
-		helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
-		helm3 repo update
-		helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
-			--namespace=$(NAMESPACE) \
-			--set image.tag=$(BUILD_NUM) \
-			--values values.yml \
-			--values env/dev/values.yml \
-			--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
-			--set openresty.geoip.license=$(GEOIP_LICENSE)
+	helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
+	helm3 repo update
+	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
+		--namespace=$(NAMESPACE) \
+		--set image.tag=$(BUILD_NUM) \
+		--values values.yml \
+		--values env/dev/values.yml \
+		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
+		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
 prod:
-	ifndef CI
-		$(error Please commit and push, this is intended to be run in a CI environment)
-	endif
-		gcloud config set project $(PROD_PROJECT)
-		gcloud container clusters get-credentials $(PROD_CLUSTER) --zone $(PROD_ZONE) --project $(PROD_PROJECT)
-		helm3 plugin install https://github.com/helm/helm-2to3.git || true
-		helm3 2to3 convert "${HELM_RELEASE}" || true
+	gcloud config set project $(PROD_PROJECT)
+	gcloud container clusters get-credentials $(PROD_CLUSTER) --zone $(PROD_ZONE) --project $(PROD_PROJECT)
+	helm3 plugin install https://github.com/helm/helm-2to3.git || true
+	helm3 2to3 convert "${HELM_RELEASE}" || true
 
-		helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
-		helm3 repo update
-		helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
-			--namespace=$(NAMESPACE) \
-			--set image.tag=$(BUILD_NUM) \
-			--values values.yml \
-			--values env/prod/values.yml \
-			--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
-			--set openresty.geoip.license=$(GEOIP_LICENSE)
+	helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
+	helm3 repo update
+	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
+		--namespace=$(NAMESPACE) \
+		--set image.tag=$(BUILD_NUM) \
+		--values values.yml \
+		--values env/prod/values.yml \
+		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
+		--set openresty.geoip.license=$(GEOIP_LICENSE)
 
 
 history:
