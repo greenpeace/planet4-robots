@@ -78,7 +78,6 @@ dev:
 	helm3 repo add p4 https://planet4-helm-charts.storage.googleapis.com && \
 	helm3 repo update
 	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
-		--version="0.5.1-alpha2" \
 		--namespace=$(NAMESPACE) \
 		--set image.tag=$(COMMIT_SHA) \
 		--values values.yaml \
