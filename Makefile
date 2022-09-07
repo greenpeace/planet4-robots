@@ -16,11 +16,13 @@ SED_MATCH ?= [^a-zA-Z0-9._-]
 ifeq ($(CIRCLECI),true)
 # Configure build variables based on CircleCI environment vars
 BUILD_NUM = build-$(CIRCLE_BUILD_NUM)
+COMMIT_SHA = $(shell echo ${CIRCLE_SHA1} | cut -b-7)
 BRANCH_NAME ?= $(shell sed 's/$(SED_MATCH)/-/g' <<< "$(CIRCLE_BRANCH)")
 BUILD_TAG ?= $(shell sed 's/$(SED_MATCH)/-/g' <<< "$(CIRCLE_TAG)")
 else
 # Not in CircleCI environment, try to set sane defaults
 BUILD_NUM = build-local
+COMMIT_SHA = build-local
 BRANCH_NAME ?= $(shell git rev-parse --abbrev-ref HEAD | sed 's/$(SED_MATCH)/-/g')
 BUILD_TAG ?= $(shell git tag -l --points-at HEAD | tail -n1 | sed 's/$(SED_MATCH)/-/g')
 endif
@@ -49,7 +51,7 @@ pull:
 build: pull
 	docker build \
 		--tag=gcr.io/planet-4-151612/robots:$(BUILD_TAG) \
-		--tag=gcr.io/planet-4-151612/robots:$(BUILD_NUM) \
+		--tag=gcr.io/planet-4-151612/robots:$(COMMIT_SHA) \
 		--tag=gcr.io/planet-4-151612/robots:$(REVISION_TAG) \
 		.
 
@@ -57,7 +59,7 @@ push: push-tag push-latest
 
 push-tag:
 	docker push gcr.io/planet-4-151612/robots:$(BUILD_TAG)
-	docker push gcr.io/planet-4-151612/robots:$(BUILD_NUM)
+	docker push gcr.io/planet-4-151612/robots:$(COMMIT_SHA)
 
 push-latest:
 	@if [[ "$(PUSH_LATEST)" = "true" ]]; then { \
@@ -78,7 +80,7 @@ dev:
 	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
 		--version="0.5.1-alpha" \
 		--namespace=$(NAMESPACE) \
-		--set image.tag=$(BUILD_NUM) \
+		--set image.tag=$(COMMIT_SHA) \
 		--values values.yaml \
 		--values env/dev/values.yaml \
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
@@ -94,7 +96,7 @@ prod:
 	helm3 repo update
 	helm3 upgrade --install --force --wait --timeout 300s $(RELEASE_NAME) $(CHART_NAME) \
 		--namespace=$(NAMESPACE) \
-		--set image.tag=$(BUILD_NUM) \
+		--set image.tag=$(COMMIT_SHA) \
 		--values values.yaml \
 		--values env/prod/values.yaml \
 		--set openresty.geoip.accountid=$(GEOIP_ACCOUNTID) \
