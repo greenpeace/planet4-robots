@@ -13,13 +13,6 @@ defaults: &defaults
   working_directory: /home/circleci/app
 
 jobs:
-  lint:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Lint yaml
-          command: make lint
 
   lint-worker:
     docker:
@@ -68,7 +61,6 @@ jobs:
 workflows:
   branch:
     jobs:
-      - lint
       - lint-worker
       - hold-promote:
           type: approval
