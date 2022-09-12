@@ -13,13 +13,6 @@ defaults: &defaults
   working_directory: /home/circleci/app
 
 jobs:
-  lint:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Lint yaml
-          command: make lint
 
   lint-worker:
     docker:
@@ -34,30 +27,6 @@ jobs:
       - run:
           name: Lint worker
           command: ./node_modules/eslint/bin/eslint.js index.js
-
-  build:
-    <<: *defaults
-    environment:
-      GOOGLE_PROJECT_ID: planet-4-151612
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - checkout
-      - run: activate-gcloud-account.sh
-      - run: gcloud auth configure-docker
-      - run: make build
-      - run: make push
-
-  dev:
-    <<: *defaults
-    environment:
-      GOOGLE_PROJECT_ID: planet-4-151612
-    steps:
-      - checkout
-      - run: activate-gcloud-account.sh
-      - deploy:
-          name: Deploy to development cluster
-          command: make dev
 
   tag:
     <<: *defaults
@@ -78,17 +47,6 @@ jobs:
             git tag -a "$new_version" -m "$new_version"
             git push origin --tags
 
-  prod:
-    <<: *defaults
-    environment:
-      GOOGLE_PROJECT_ID: planet4-production
-    steps:
-      - checkout
-      - run: activate-gcloud-account.sh
-      - deploy:
-          name: Deploy to production cluster
-          command: make prod
-
   deploy-worker:
     <<: *defaults
     steps:
@@ -103,29 +61,9 @@ jobs:
 workflows:
   branch:
     jobs:
-      - lint
       - lint-worker
-      - build:
-          context: org-global
-          requires:
-            - lint
-            - lint-worker
-          filters:
-            branches:
-              only:
-                - main
-      - dev:
-          context: org-global
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - main
       - hold-promote:
           type: approval
-          requires:
-            - dev
           filters:
             branches:
               only: main
@@ -139,13 +77,6 @@ workflows:
 
   tag:
     jobs:
-      - prod:
-          context: org-global
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
       - deploy-worker:
           context: cf-workers
           filters:
