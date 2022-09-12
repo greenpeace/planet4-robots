@@ -72,8 +72,6 @@ workflows:
       - lint-worker
       - hold-promote:
           type: approval
-          requires:
-            - dev
           filters:
             branches:
               only: main
