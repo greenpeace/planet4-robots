@@ -1,5 +1,5 @@
 name = "planet4-robots"
 type = "javascript"
 workers_dev = false
-routes = ["www-dev.greenpeace.org/robots.txt", "www-stage.greenpeace.org/robots.txt", "www.greenpeace.org/robots.txt"]
+routes = ["www-dev.greenpeace.org/robots.txt", "www-stage.greenpeace.org/robots.txt", "www-prod.greenpeace.org/robots.txt", "www.greenpeace.org/robots.txt"]
 compatibility_date = "2022-06-27"
