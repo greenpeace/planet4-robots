@@ -12,6 +12,6 @@
     "eslint": "^7.15.0"
   },
   "dependencies": {
-    "@cloudflare/wrangler": "^1.12.2"
+    "@cloudflare/wrangler": "^1.21.0"
   }
 }
