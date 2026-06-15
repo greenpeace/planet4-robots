@@ -9,7 +9,7 @@
   },
   "license": "GPLv3",
   "devDependencies": {
-    "eslint": "^7.15.0"
+    "eslint": "^10.5.0"
   },
   "dependencies": {
     "@cloudflare/wrangler": "^1.12.2"
