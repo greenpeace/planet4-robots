@@ -15,10 +15,7 @@ defaults: &defaults
 jobs:
 
   lint-worker:
-    docker:
-      - image: circleci/node:lts
-        auth:
-          <<: *docker_auth
+    <<: *defaults
     steps:
       - checkout
       - run:
