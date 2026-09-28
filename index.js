@@ -1,4 +1,4 @@
-/* global addEventListener, Response */
+/* global addEventListener */
 
 addEventListener("fetch", event => {
   let request = event.request;

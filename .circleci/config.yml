@@ -55,8 +55,8 @@ jobs:
           name: Install dependencies
           command: npm ci
       - run:
-          name: Publish
-          command: npx wrangler publish
+          name: Deploy
+          command: npx wrangler deploy
 
 workflows:
   branch:
